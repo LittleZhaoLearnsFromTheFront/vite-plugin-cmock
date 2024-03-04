@@ -1,9 +1,8 @@
-import { ViteDevServer } from "vite"
 import path from "node:path"
 import fs from "node:fs"
 
 export default async ({ rootPath = path.resolve(process.cwd()), dirName = 'mock' }: { rootPath?: string, dirName?: string }) => {
-    let files = []
+    let files: string[] = []
     const content: { [key: string]: string } = {}
     const rootPathDir = path.resolve(rootPath, `./${dirName}`)
     if (fs.existsSync(rootPathDir)) {
@@ -18,7 +17,7 @@ export default async ({ rootPath = path.resolve(process.cwd()), dirName = 'mock'
     }
     return {
         name: 'vite-plugin-cmock',
-        configureServer(server: ViteDevServer) {
+        configureServer(server) {
             server.middlewares.use((req, res, next) => {
                 let data
                 Object.keys(content).forEach(key => {
