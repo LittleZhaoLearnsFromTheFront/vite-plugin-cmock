@@ -9,6 +9,11 @@
     "registry": "https://registry.npmjs.org",
     "access": "public"
   },
+  "homepage": "https://github.com/LittleZhaoLearnsFromTheFront/vite-plugin-cmock",
+  "repository": {
+    "type": "github",
+    "url": "https://github.com/LittleZhaoLearnsFromTheFront/vite-plugin-cmock.git"
+  },
   "scripts": {
     "build": "unbuild",
     "prepublish": "unbuild"
