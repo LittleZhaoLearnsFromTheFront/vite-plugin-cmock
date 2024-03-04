@@ -1,7 +1,8 @@
 import path from "node:path"
 import fs from "node:fs"
 
-export default async ({ rootPath = path.resolve(process.cwd()), dirName = 'mock' }: { rootPath?: string, dirName?: string }) => {
+export default async ({ rootPath = './', dirName = 'mock' }: { rootPath?: string, dirName?: string }) => {
+    rootPath = path.resolve(process.cwd(), `${rootPath}`)
     let files: string[] = []
     const content: { [key: string]: string } = {}
     const rootPathDir = path.resolve(rootPath, `./${dirName}`)
