@@ -1,0 +1,31 @@
+{
+  "name": "vite-plugin-cmock",
+  "private": false,
+  "version": "0.0.1",
+  "description": "vite + pulgin + mock",
+  "main": "dist/index.mjs",
+  "type": "module",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  },
+  "scripts": {
+    "build": "unbuild",
+    "prepublish": "unbuild"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "vite",
+    "plugin",
+    "mock"
+  ],
+  "author": "zhaohx0409@163.com",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.11.24",
+    "unbuild": "^2.0.0",
+    "vite": "5.x"
+  }
+}
