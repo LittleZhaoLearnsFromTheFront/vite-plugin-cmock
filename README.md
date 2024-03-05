@@ -1,11 +1,12 @@
 # 使用
-    npm install vite-plugin-attr-to-window -D
+    npm install vite-plugin-cmock -D
     在vite.config.js中
 
-    import vitePluginAttrToWindow from "vite-plugin-attr-to-window"
+    import vitePluginMock from "vite-plugin-cmock"
 
     plugins:[
-        vitePluginAttrToWindow({
-            basePath:'11111'
+        vitePluginMock({  //默认可不填
+            rootPath:'./',
+            dirName:'mock'
         })
     ]
