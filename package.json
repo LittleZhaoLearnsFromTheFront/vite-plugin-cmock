@@ -1,7 +1,7 @@
 {
   "name": "vite-plugin-cmock",
   "private": false,
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "vite + pulgin + mock",
   "main": "dist/index.mjs",
   "type": "module",
@@ -24,7 +24,10 @@
   "keywords": [
     "vite",
     "plugin",
-    "mock"
+    "mock",
+    "vue",
+    "react",
+    "javaScript"
   ],
   "author": "zhaohx0409@163.com",
   "license": "ISC",
