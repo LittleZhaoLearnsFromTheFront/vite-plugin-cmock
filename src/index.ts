@@ -1,8 +1,8 @@
 import path from "node:path"
 import fs from "node:fs"
 
-export default async (obj?: { rootPath?: string, dirName?: string }) => {
-    let { rootPath = './', dirName = 'mock' } = obj ?? {}
+export default async (option?: { rootPath?: string, dirName?: string }) => {
+    let { rootPath = './', dirName = 'mock' } = option ?? {}
     rootPath = path.resolve(process.cwd(), `${rootPath}`)
     let files: string[] = []
     const content: { [key: string]: string } = {}
@@ -18,7 +18,7 @@ export default async (obj?: { rootPath?: string, dirName?: string }) => {
         }
     }
     return {
-        name: 'vite-plugin-cmock',
+        name: 'labmai-mock',
         configureServer(server) {
             server.middlewares.use((req, res, next) => {
                 let data
@@ -30,14 +30,16 @@ export default async (obj?: { rootPath?: string, dirName?: string }) => {
                         data = content[key]
                     }
                 })
-                if (data) {
-                    const headers = {
-                        'Content-Type': 'application/json',
-                    };
-                    res.writeHead(200, headers);
-                    res.end(JSON.stringify(data));
-                    return;
+                if (!data) return next()
+                if (typeof data === 'function') {
+                    data(req, res)
+                    return next()
                 }
+                const headers = {
+                    'Content-Type': 'application/json',
+                };
+                res.writeHead(200, headers);
+                res.end(JSON.stringify(data));
                 next()
             })
         }
