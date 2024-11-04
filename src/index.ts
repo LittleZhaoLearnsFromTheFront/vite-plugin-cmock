@@ -1,24 +1,34 @@
 import path from "node:path"
 import fs from "node:fs"
 
-export default async (option?: { rootPath?: string, dirName?: string }) => {
-    let { rootPath = './', dirName = 'mock' } = option ?? {}
-    rootPath = path.resolve(process.cwd(), `${rootPath}`)
+const readMock = async (rootPathDir: string) => {
+    let content: { [key: string]: string } = {}
+    let timestamp = new Date().getTime();
+
     let files: string[] = []
-    const content: { [key: string]: string } = {}
-    const rootPathDir = path.resolve(rootPath, `./${dirName}`)
     if (fs.existsSync(rootPathDir)) {
         files = fs.readdirSync(rootPathDir)
         for (let file of files) {
-            const contentFile = await import(path.resolve(rootPathDir, `./${file}`))
-            Object.keys(contentFile.default).forEach(key => {
+            let curContent
+            const filePath = path.resolve(rootPathDir, `./${file}`)
+            const contentFile = await import(filePath + `?t=${timestamp}`)
+            curContent = contentFile.default
+            Object.keys(curContent).forEach(key => {
                 if (Reflect.has(content, key)) return
-                content[key] = contentFile.default[key]
+                content[key] = curContent[key]
             })
         }
     }
+    return content
+}
+
+export default async (option?: { rootPath?: string, dirName?: string }) => {
+    let { rootPath = './', dirName = 'mock' } = option ?? {}
+    rootPath = path.resolve(process.cwd(), `${rootPath}`)
+    const rootPathDir = path.resolve(rootPath, `./${dirName}`)
+    let content: { [key: string]: string } = await readMock(rootPathDir)
     return {
-        name: 'labmai-mock',
+        name: 'vite-plugin-cmock',
         configureServer(server) {
             server.middlewares.use((req, res, next) => {
                 let data
@@ -33,15 +43,29 @@ export default async (option?: { rootPath?: string, dirName?: string }) => {
                 if (!data) return next()
                 if (typeof data === 'function') {
                     data(req, res)
-                    return next()
+                    return
                 }
                 const headers = {
                     'Content-Type': 'application/json',
                 };
                 res.writeHead(200, headers);
                 res.end(JSON.stringify(data));
-                next()
             })
+        },
+        async handleHotUpdate(ctx) {
+            if ((ctx.file as string).startsWith(rootPathDir)) {
+                let timestamp = new Date().getTime();
+                /**
+                 * 这里通过time，不使用缓存每次都读取最新的js
+                 */
+                const contentFile = await import(ctx.file + `?t=${timestamp}`)
+                const curContent = contentFile.default
+
+                Object.keys(curContent).forEach(key => {
+                    content[key] = curContent[key]
+                })
+                console.log("MOCK......");
+            }
         }
     }
 }
